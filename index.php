@@ -1,3 +1,24 @@
+<?php
+session_start();
+require_once 'conexionPdo.php';
+// require 'conexion.php';
+if (isset($_SESSION['user_id'])) {
+  $recordar = $conexion->prepare('SELECT id, email, password FROM usuario WHERE id = :id');
+  $recordar->bindParam(':id', $_SESSION['user_id']);
+  $recordar->execute();
+  $resultado = $recordar->fetch(PDO::FETCH_ASSOC);
+
+  $user = null;
+  if (count($resultado) > 0) {
+    $user = $resultado;
+  }
+}
+
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,6 +48,17 @@
   <div class="site-wrap">
     <?php include("./layouts/header.php"); ?>
 
+    <?php if (!empty($user)) : ?>
+      <br>
+      <p>Bienvenido usuario<?= $user['email'] ?></p>
+      <br>
+      <p>Inicio satisfactoriamente</p>
+      <a href="logout.php">Cerrar Sesion</a>
+    <?php else : ?>
+      <h1>Inicie sesion o registrese</h1>
+      <a href="/Carrito-De-Compras-master/php/login.php">Iniciar sesion</a>
+      <a href="/Carrito-De-Compras-master/php/singup.php">Registrate</a>
+    <?php endif; ?>
     <div class="site-section">
       <div class="container">
 
